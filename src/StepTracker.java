@@ -4,9 +4,14 @@ import java.util.Scanner;
 public class StepTracker {
     Converter converter = new Converter();
     Scanner scanner = new Scanner(System.in);
-    int defaultStep = 10000;
-    HashMap<Integer, MonthData> MonthToData = new HashMap<>();
 
+    int defaultStep = 10000;
+    int maxCount = 0;
+    int count = 0;
+    int max = 0;
+    int sum = 0;
+
+    HashMap<Integer, MonthData> MonthToData = new HashMap<>();
 
     public StepTracker() {
         for (int i = 0; i < 12; i++) {
@@ -27,7 +32,6 @@ public class StepTracker {
         } else {
             System.out.println("Введено неверное количество шагов");
         }
-
     }
 
     public void addSteps() {
@@ -56,33 +60,23 @@ public class StepTracker {
             for (int i = 0; i < MonthToData.get(month).dayStep.length; i++) {
                 System.out.println((i + 1) + " день: " + MonthToData.get(month).dayStep[i]);
             }
+
+            totalNumberSteps(month);
+
+            stepCounting(month);
+
+            converter.convertKilometers(sum);
+
+            converter.convertCalories(sum);
+
+            bestSeries(month);
+
         } else {
-            System.out.println("Неверно указан месяц");
+            System.out.println("Неверно указан месяц!");
         }
-        int sum = 0;
-        for (int i = 0; i < MonthToData.get(month).dayStep.length; i++) {
+    }
 
-            sum = sum + MonthToData.get(month).dayStep[i];
-        }
-        System.out.println("Общее количество шагов за месяц: " + sum);
-
-        int max = 0;
-        for (int i = 0; i < MonthToData.get(month).dayStep.length; i++) {
-            if (max < MonthToData.get(month).dayStep[i]) {
-                max = MonthToData.get(month).dayStep[i];
-            }
-        }
-        System.out.println("Максимальное количество шагов равно: " + max);
-
-        int mediumStep = sum / MonthToData.get(month).dayStep.length;
-        System.out.println("Среднее количество шагов: " + mediumStep);
-
-        converter.km(sum);
-
-        converter.kal(sum);
-
-        int maxCount = 0;
-        int count = 0;
+    public void bestSeries(int month) {
         for (Integer countDay : MonthToData.get(month).dayStep) {
             if (countDay >= defaultStep) {
                 count++;
@@ -96,4 +90,23 @@ public class StepTracker {
         System.out.println("Лучшая серия дней: " + maxCount);
     }
 
+    public void stepCounting(int month) {
+        for (int i = 0; i < MonthToData.get(month).dayStep.length; i++) {
+            if (max < MonthToData.get(month).dayStep[i]) {
+                max = MonthToData.get(month).dayStep[i];
+            }
+        }
+        System.out.println("Максимальное количество шагов равно: " + max);
+
+        int mediumStep = sum / MonthToData.get(month).dayStep.length;
+        System.out.println("Среднее количество шагов: " + mediumStep);
+    }
+
+    public void totalNumberSteps(int month) {
+        for (int i = 0; i < MonthToData.get(month).dayStep.length; i++) {
+
+            sum = sum + MonthToData.get(month).dayStep[i];
+        }
+        System.out.println("Общее количество шагов за месяц: " + sum);
+    }
 }
